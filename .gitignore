@@ -102,3 +102,23 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+###################################################################################################################################################################
+###################################################################################################################################################################
+# Local Changes for Kirk
+
+# Archive Files
+/archive/
+
+# Log Files                              #
+# Ignore log files, but retain directory #
+/tmp/
+/logs/
+
+# Test Files                                #
+# Ignore test files including the directory #
+/public/test*
+
+# Backup Files                   #
+# Ignore backup copies of a file #
+*.bak$
