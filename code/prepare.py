@@ -68,7 +68,7 @@ with open(food_inspections_path) as food_inspections_csv_file:
         line_count = 0
         for row in food_inspections_csv_reader:
             if line_count == 0:
-                ordered_food_inspections_writer.writerow([row[1], row[2], row[4], row[5], row[10], row[11], row[12], row[13], row[14], row[15]])
+                ordered_food_inspections_writer.writerow(["dba_name","aka_name","facility_type","risk","inspection_date","inspection_type","results","violations","latitude","longitude"])
                 line_count += 1
             else:
                 ordered_food_inspections_writer.writerow([row[1], row[2], row[4], row[5], row[10], row[11], row[12], row[13], row[14], row[15]])
