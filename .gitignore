@@ -103,6 +103,27 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+###################################################################################################################################################################
+###################################################################################################################################################################
+# Local Changes for Kirk
 
-# ignore csv files
+# Archive Files
+/archive/
+
+# Log Files                              #
+# Ignore log files, but retain directory #
+/tmp/
+/logs/
+
+# Test Files                                #
+# Ignore test files including the directory #
+/public/test*
+
+# Backup Files                   #
+# Ignore backup copies of a file #
+*.bak$
+
+
+# Prevent datasets from being uploaded
+# Ignore csv files
 *.csv
