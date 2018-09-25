@@ -121,9 +121,13 @@ venv.bak/
 
 # Backup Files                   #
 # Ignore backup copies of a file #
+<<<<<<< HEAD
 *.bak$
 
 
 # Prevent datasets from being uploaded
 # Ignore csv files
 *.csv
+=======
+*.bak$
+>>>>>>> 7dd8d9e2e6d197a7ad5316b39ebe15a76a8132a8
