@@ -36,17 +36,19 @@ with open(crime_path) as crime_csv_file:
         crime_csv_reader = csv.reader(crime_csv_file, delimiter=',')
         ordered_crime_writer = csv.writer(ordered_crime_csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         line_count = 0
+        lines_removed = 0
         for row in crime_csv_reader:
             if line_count == 0:
                 ordered_crime_writer.writerow(["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
                 line_count += 1
             else:
                 if (row[19] in (None, "")) or (row[20] in (None, "")):
-                    print(f'Blank Data found! Removing')
+                    print(f'Blank Data found! Removing line_count={line_count}')
+                    lines_removed += 1
                 else:
                     ordered_crime_writer.writerow([row[2], row[3], row[4], row[8], row[9], row[19], row[20]])
                 line_count += 1
-        print(f'Processed {line_count} lines.')
+        print(f'Processed {line_count} lines. {lines_removed} lines removed.')
 
 '''
 # Process the food_inspections.csv and create ordered_food_inspections.csv
