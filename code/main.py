@@ -17,5 +17,4 @@ ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordere
 
 crimeData = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
 #plt.plot(crimeData[1:100, 5], crimeData[1:100, 6], 'ro')
-#plt.axis([0, 180, 0, 180])
 #plt.show()
