@@ -46,7 +46,7 @@ with open(crime_path) as crime_csv_file:
                     print(f'Blank Data found! Removing line_count={line_count}')
                     lines_removed += 1
                 else:
-                    ordered_crime_writer.writerow([row[2], row[3], row[4], row[8], row[9], row[19], row[20]])
+                    ordered_crime_writer.writerow([row[2], row[3], int(row[4][:2]), row[8], row[9], row[19], row[20]])
                 line_count += 1
         print(f'Processed {line_count} lines. {lines_removed} lines removed.')
 
