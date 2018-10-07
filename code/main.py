@@ -10,11 +10,21 @@ import os
 import scipy.cluster as cluster
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 # Read entire csv as a numpy array
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
 #ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
 
-crimeData = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
-#plt.plot(crimeData[1:100, 5], crimeData[1:100, 6], 'ro')
+#crimeData_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
+#print(f'array was created, making dataframe')
+#crimeData_dataframe = pd.dataframe(data=crimeData_array, columns=["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
+#print(f'dataframe was created, taking sample')
+
+
+#crimeData_sample = crimeData_dataframe.sample(n=1000, replace=True)
+#print(f'crimedata_sample[0] = {crimeData_sample[1]}')
+
+# Plot the sample
+#plt.plot(crimeData_array[1:100, 5], crimeData_array[1:100, 6], 'ro')
 #plt.show()

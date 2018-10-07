@@ -131,4 +131,8 @@ venv.bak/
 =======
 # Dataset folder
 datasets/
->>>>>>> paul
+
+# Latex Build Files
+*.aux
+*.fdb_latexmk
+*.fls
