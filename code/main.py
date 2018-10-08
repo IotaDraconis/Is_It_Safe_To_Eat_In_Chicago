@@ -16,15 +16,23 @@ import pandas as pd
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
 #ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
 
-#crimeData_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
-#print(f'array was created, making dataframe')
-#crimeData_dataframe = pd.dataframe(data=crimeData_array, columns=["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
-#print(f'dataframe was created, taking sample')
+crimeData_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
+print(f'array was created, making dataframe')
+crimeData_dataframe = pd.DataFrame(data=crimeData_array, columns=["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
+crimeData_dataframe.reset_index()
+print(f'dataframe was created, taking sample')
 
+crimeData_sample1 = crimeData_dataframe.sample(n=75000, replace=True)
+crimeData_sample2 = crimeData_dataframe.sample(n=75000, replace=True)
+crimeData_sample3 = crimeData_dataframe.sample(n=75000, replace=True)
+crimeData_sample4 = crimeData_dataframe.sample(n=75000, replace=True)
 
-#crimeData_sample = crimeData_dataframe.sample(n=1000, replace=True)
-#print(f'crimedata_sample[0] = {crimeData_sample[1]}')
+# Plot the samples
+# Create the subplots for each sample
+fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
 
-# Plot the sample
-#plt.plot(crimeData_array[1:100, 5], crimeData_array[1:100, 6], 'ro')
-#plt.show()
+axs[0, 0].plot(crimeData_sample1.longitude, crimeData_sample1.latitude, 'b,')
+axs[0, 1].plot(crimeData_sample2.longitude, crimeData_sample2.latitude, 'r,')
+axs[1, 0].plot(crimeData_sample3.longitude, crimeData_sample3.latitude, 'g,')
+axs[1, 1].plot(crimeData_sample4.longitude, crimeData_sample4.latitude, 'm,')
+plt.show()
