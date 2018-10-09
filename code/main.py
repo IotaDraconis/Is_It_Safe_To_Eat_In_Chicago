@@ -16,23 +16,32 @@ import pandas as pd
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
 #ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
 
-crimeData_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
+crimeAll_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
 print(f'array was created, making dataframe')
-crimeData_dataframe = pd.DataFrame(data=crimeData_array, columns=["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
-crimeData_dataframe.reset_index()
+crimeAll_df = pd.DataFrame(data=crimeAll_array, columns=["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
+crimeAll_df.reset_index()
 print(f'dataframe was created, taking sample')
 
-crimeData_sample1 = crimeData_dataframe.sample(n=75000, replace=True)
-crimeData_sample2 = crimeData_dataframe.sample(n=75000, replace=True)
-crimeData_sample3 = crimeData_dataframe.sample(n=75000, replace=True)
-crimeData_sample4 = crimeData_dataframe.sample(n=75000, replace=True)
+crime01_df = crimeAll_df.loc[crimeAll_df['iucr'] == '1']
+crime03_df = crimeAll_df.loc[crimeAll_df['iucr'] == '3']
+crime04_df = crimeAll_df.loc[crimeAll_df['iucr'] == '4']
+crime08_df = crimeAll_df.loc[crimeAll_df['iucr'] == '8']
+
+crime_sample1 = crime01_df.sample(n=5000, replace=True)
+crime_sample2 = crime03_df.sample(n=5000, replace=True)
+crime_sample3 = crime04_df.sample(n=5000, replace=True)
+crime_sample4 = crime08_df.sample(n=5000, replace=True)
 
 # Plot the samples
 # Create the subplots for each sample
 fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
-
-axs[0, 0].plot(crimeData_sample1.longitude, crimeData_sample1.latitude, 'b,')
-axs[0, 1].plot(crimeData_sample2.longitude, crimeData_sample2.latitude, 'r,')
-axs[1, 0].plot(crimeData_sample3.longitude, crimeData_sample3.latitude, 'g,')
-axs[1, 1].plot(crimeData_sample4.longitude, crimeData_sample4.latitude, 'm,')
+print(f'After Subplot')
+axs[0, 0].plot(crime_sample1.longitude, crime_sample1.latitude, 'r,')
+print(f'After Plot 1')
+axs[0, 1].plot(crime_sample2.longitude, crime_sample2.latitude, 'b,')
+print(f'After Plot 2')
+axs[1, 0].plot(crime_sample3.longitude, crime_sample3.latitude, 'g,')
+print(f'After Plot 3')
+axs[1, 1].plot(crime_sample4.longitude, crime_sample4.latitude, 'm,')
+print(f'After Plot 4')
 plt.show()
