@@ -27,10 +27,11 @@ crime03_df = crimeAll_df.loc[crimeAll_df['iucr'] == '3']
 crime04_df = crimeAll_df.loc[crimeAll_df['iucr'] == '4']
 crime08_df = crimeAll_df.loc[crimeAll_df['iucr'] == '8']
 
-crime_sample1 = crime01_df.sample(n=5000, replace=True)
-crime_sample2 = crime03_df.sample(n=5000, replace=True)
-crime_sample3 = crime04_df.sample(n=5000, replace=True)
-crime_sample4 = crime08_df.sample(n=5000, replace=True)
+#Note: The 01 set is <10K items, thus it does not need samples to express it.
+crime_sample1 = crime01_df
+crime_sample2 = crime03_df.sample(n=75000, replace=True)
+crime_sample3 = crime04_df.sample(n=75000, replace=True)
+crime_sample4 = crime08_df.sample(n=75000, replace=True)
 
 # Plot the samples
 # Create the subplots for each sample
