@@ -103,6 +103,7 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+<<<<<<< HEAD
 ###################################################################################################################################################################
 ###################################################################################################################################################################
 # Local Changes for Kirk
@@ -122,3 +123,16 @@ venv.bak/
 # Backup Files                   #
 # Ignore backup copies of a file #
 *.bak$
+
+
+# Prevent datasets from being uploaded
+# Ignore csv files
+*.csv
+=======
+# Dataset folder
+datasets/
+
+# Latex Build Files
+*.aux
+*.fdb_latexmk
+*.fls

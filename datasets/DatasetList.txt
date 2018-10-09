@@ -1,0 +1,5 @@
+Chicago Crime Dataset: https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
+    save as crime.csv
+
+Chicago Food Inspections Dataset: https://data.cityofchicago.org/Health-Human-Services/Food-Inspections/4ijn-s7e5
+    save as food_inspections.csv
