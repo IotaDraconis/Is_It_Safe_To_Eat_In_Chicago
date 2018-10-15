@@ -8,6 +8,8 @@ Then run prepare.py. This will clean the data for use with this script
 #import csv
 import os
 import scipy.cluster as cluster
+import matplotlib
+matplotlib.use('Qt5Agg') # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -35,6 +37,8 @@ crime_sample4 = crime08_df.sample(n=75000, replace=True)
 
 # Plot the samples
 # Create the subplots for each sample
+# Uncomment the bellow code if you would rather have a dark background for the plot
+#plt.style.use(['dark_background'])
 fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
 print(f'After Subplot')
 axs[0, 0].plot(crime_sample1.longitude, crime_sample1.latitude, 'r,')
