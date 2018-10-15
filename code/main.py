@@ -7,12 +7,14 @@ Then run prepare.py. This will clean the data for use with this script
 
 #import csv
 import os
-import scipy.cluster as cluster
 import matplotlib
-matplotlib.use('Qt5Agg') # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import scipy.cluster as cluster
+matplotlib.use('Qt5Agg') # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
+import matplotlib.pyplot as plt
+from sklearn.cluster import DBSCAN
+from sklearn import metrics
 
 # Read entire csv as a numpy array
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
@@ -35,6 +37,24 @@ crime_sample2 = crime03_df.sample(n=75000, replace=True)
 crime_sample3 = crime04_df.sample(n=75000, replace=True)
 crime_sample4 = crime08_df.sample(n=75000, replace=True)
 
+# create arrays with just the data we ned for DBSCAN
+crime_sample1LatLong = crime_sample1[['latitude', 'longitude']]
+
+print(crime_sample1LatLong)
+
+# Run DBSCAN on the samples
+# Need to tweak eps
+db = DBSCAN(eps=0.1, min_samples=5).fit(X=crime_sample1LatLong)
+core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+core_samples_mask[db.core_sample_indices_] = True
+labels = db.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+print('Estimated number of clusters: %d' % n_clusters_)
+
+'''
 # Plot the samples
 # Create the subplots for each sample
 # Uncomment the bellow code if you would rather have a dark background for the plot
@@ -50,3 +70,4 @@ print(f'After Plot 3')
 axs[1, 1].plot(crime_sample4.longitude, crime_sample4.latitude, 'm,')
 print(f'After Plot 4')
 plt.show()
+'''
