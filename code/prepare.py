@@ -45,6 +45,9 @@ with open(crime_path) as crime_csv_file:
                 if (row[19] in (None, "")) or (row[20] in (None, "")):
                     print(f'Blank Data found! Removing line_count={line_count}')
                     lines_removed += 1
+                elif (float(row[19]) > 42.5) or (float(row[19]) < 41.2) or (float(row[20]) < -88.4) or (float(row[20]) > -87.1):
+                    print(f'Lat-Long point outside of main city! Removing line_count={line_count}')
+                    lines_removed += 1
                 else:
                     ordered_crime_writer.writerow([row[2], row[3], int(row[4][:2]), row[8], row[9], row[19], row[20]])
                 line_count += 1
@@ -64,6 +67,7 @@ with open(crime_path) as crime_csv_file:
 # [8] = latitude
 # [9] = longitude
 '''
+'''
 with open(food_inspections_path) as food_inspections_csv_file:
     with open(ordered_food_inspections_path, mode='w') as ordered_food_inspections_csv_file:
         food_inspections_csv_reader = csv.reader(food_inspections_csv_file, delimiter=',')
@@ -77,3 +81,4 @@ with open(food_inspections_path) as food_inspections_csv_file:
                 ordered_food_inspections_writer.writerow([row[1], row[2], row[4], row[5], row[10], row[11], row[12], row[13], row[14], row[15]])
                 line_count += 1
         print(f'Processed {line_count} lines.')
+'''
