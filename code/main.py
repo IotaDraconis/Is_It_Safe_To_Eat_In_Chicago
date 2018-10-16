@@ -42,7 +42,7 @@ X = crime_sample1[['latitude', 'longitude']]
 
 # Run DBSCAN on the samples
 # Need to tweak eps
-db = DBSCAN(eps=0.01, min_samples=50).fit(X)
+db = DBSCAN(eps=0.0065, min_samples=50).fit(X)
 core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
 core_samples_mask[db.core_sample_indices_] = True
 labels = db.labels_
