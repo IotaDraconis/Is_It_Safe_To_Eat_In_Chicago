@@ -13,9 +13,55 @@ import pandas as pd
 import scipy.cluster as cluster
 matplotlib.use('Qt5Agg') # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
 import matplotlib.pyplot as plt
+from matplotlib import cm
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 
+## Function Defs
+def findData(plt, sample, epsln, minSam, title):
+    X = sample[['latitude', 'longitude']]
+    # Run DBSCAN on the samples
+    # Need to tweak eps
+    db = DBSCAN(eps=epsln, min_samples=minSam).fit(X)
+    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+    core_samples_mask[db.core_sample_indices_] = True
+    labels = db.labels_
+
+    # Number of clusters in labels, ignoring noise if present.
+    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    print(f'Estimated number of clusters: {n_clusters_}' )
+
+    # Black removed and is used for noise instead.
+    unique_labels = set(labels)
+    colors = [cm.Spectral(each)
+              for each in np.linspace(0, 1, len(unique_labels))]
+    for k, col in zip(unique_labels, colors):
+        if k == -1:
+            # Black used for noise.
+            col = [0, 0, 0, 1]
+
+        class_member_mask = (labels == k)
+
+        xy = X[class_member_mask & core_samples_mask]
+        print(xy.latitude)
+        plt.plot(xy.latitude,
+                 xy.longitude,
+                 '.',
+                 markerfacecolor=tuple(col),
+                 markeredgecolor='k',
+                 markersize=14)
+
+        xy = X[class_member_mask & ~core_samples_mask]
+        plt.plot(xy.latitude,
+                 xy.longitude,
+                 '.',
+                 markerfacecolor=tuple(col),
+                 markeredgecolor='k',
+                 markersize=6)
+    plt.set_title(title)
+
+
+## Start of lodaing data
 # Read entire csv as a numpy array
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
 #ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
@@ -33,57 +79,18 @@ crime08_df = crimeAll_df.loc[crimeAll_df['iucr'] == '8']
 
 #Note: The 01 set is <10K items, thus it does not need samples to express it.
 crime_sample1 = crime01_df
-crime_sample2 = crime03_df.sample(n=75000, replace=True)
-crime_sample3 = crime04_df.sample(n=75000, replace=True)
-crime_sample4 = crime08_df.sample(n=75000, replace=True)
+crime_sample3 = crime03_df.sample(n=75000, replace=True)
+crime_sample4 = crime04_df.sample(n=75000, replace=True)
+crime_sample8 = crime08_df.sample(n=75000, replace=True)
 
-# create arrays with just the data we ned for DBSCAN
-X = crime_sample1[['latitude', 'longitude']]
-
-# Run DBSCAN on the samples
-# Need to tweak eps
-db = DBSCAN(eps=0.0065, min_samples=50).fit(X)
-core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-core_samples_mask[db.core_sample_indices_] = True
-labels = db.labels_
-
-# Number of clusters in labels, ignoring noise if present.
-n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-print('Estimated number of clusters: %d' % n_clusters_)
-
-
-# Black removed and is used for noise instead.
-unique_labels = set(labels)
-colors = [plt.cm.Spectral(each)
-          for each in np.linspace(0, 1, len(unique_labels))]
-for k, col in zip(unique_labels, colors):
-    if k == -1:
-        # Black used for noise.
-        col = [0, 0, 0, 1]
-
-    class_member_mask = (labels == k)
-
-    xy = X[class_member_mask & core_samples_mask]
-    print(xy.latitude)
-    plt.plot(xy.latitude,
-             xy.longitude,
-             '.',
-             markerfacecolor=tuple(col),
-             markeredgecolor='k',
-             markersize=14)
-
-    xy = X[class_member_mask & ~core_samples_mask]
-    plt.plot(xy.latitude,
-             xy.longitude,
-             '.',
-             markerfacecolor=tuple(col),
-             markeredgecolor='k',
-             markersize=6)
-
-plt.title('Estimated number of clusters: %d' % n_clusters_)
+## Run the sets created above on DBSCAN
+fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
+# The values for eps and min_samples need tweaked
+findData(axs[0, 0], crime_sample1, 0.0065, 50, 'Homicide')
+findData(axs[0, 1], crime_sample3, 0.006, 150, 'Robbery')
+findData(axs[1, 0], crime_sample4, 0.006, 150, 'Battery')
+findData(axs[1, 1], crime_sample8, 0.006, 150, 'Theft')
 plt.show()
-
 
 
 '''
