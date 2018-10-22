@@ -18,7 +18,7 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 
 ## Function Defs
-def findData(plt, sample, epsln, minSam, title):
+def find_data_DBSCAN(plt, sample, epsln, minSam, title):
     X = sample[['latitude', 'longitude']]
     # Run DBSCAN on the samples
     # Need to tweak eps
@@ -29,7 +29,7 @@ def findData(plt, sample, epsln, minSam, title):
 
     # Number of clusters in labels, ignoring noise if present.
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-    print(f'Estimated number of clusters: {n_clusters_}' )
+    print(f'Estimated number of clusters for {title}: {n_clusters_}' )
 
     # Black removed and is used for noise instead.
     unique_labels = set(labels)
@@ -43,7 +43,6 @@ def findData(plt, sample, epsln, minSam, title):
         class_member_mask = (labels == k)
 
         xy = X[class_member_mask & core_samples_mask]
-        print(xy.latitude)
         plt.plot(xy.latitude,
                  xy.longitude,
                  '.',
@@ -58,7 +57,11 @@ def findData(plt, sample, epsln, minSam, title):
                  markerfacecolor=tuple(col),
                  markeredgecolor='k',
                  markersize=6)
-    plt.set_title(title)
+    plt.set_title(f'{title}:{n_clusters_}')
+
+
+#TODO: Implement sow_and_grow with the disjoint-set data structure
+#def sow_and_grow(X, eps, min_samples, n):
 
 
 ## Start of lodaing data
@@ -72,24 +75,43 @@ crimeAll_df = pd.DataFrame(data=crimeAll_array, columns=["date", "block", "iucr"
 crimeAll_df.reset_index()
 print(f'dataframe was created, taking sample')
 
-crime01_df = crimeAll_df.loc[crimeAll_df['iucr'] == '1']
-crime03_df = crimeAll_df.loc[crimeAll_df['iucr'] == '3']
-crime04_df = crimeAll_df.loc[crimeAll_df['iucr'] == '4']
-crime08_df = crimeAll_df.loc[crimeAll_df['iucr'] == '8']
-
-#Note: The 01 set is <10K items, thus it does not need samples to express it.
-crime_sample1 = crime01_df
-crime_sample3 = crime03_df.sample(n=75000, replace=True)
-crime_sample4 = crime04_df.sample(n=75000, replace=True)
-crime_sample8 = crime08_df.sample(n=75000, replace=True)
+crime_sample = {}
+for i in range(16):
+    print(f'Using ICUR: {i + 1}')
+    crime_sample_TEMP = crimeAll_df.loc[crimeAll_df['iucr'] == f'{i + 1}']
+    print(type(crime_sample_TEMP))
+    if crime_sample_TEMP.shape[0] > 50000:
+        print(f'{i} has more than 50K points({crime_sample_TEMP.shape[0]} points), using a sample of 50K points.')
+        crime_sample[i] = crime_sample_TEMP.sample(n=50000, replace=True)
+    elif crime_sample_TEMP.shape[0] > 0:
+        print(f'{i} has {crime_sample_TEMP.shape[0]} points, using all points.')
+        crime_sample[i] = crime_sample_TEMP
+    elif crime_sample_TEMP.shape[0] <= 0:
+        #crime_sample[{i}] = crime_sample_TEMP
+        print(f'{i} is invalid, no points were found')
 
 ## Run the sets created above on DBSCAN
-fig, axs = plt.subplots(2, 2, sharex=True, sharey=True)
+fig, axs = plt.subplots(4, 4, sharex=True, sharey=True)
 # The values for eps and min_samples need tweaked
-findData(axs[0, 0], crime_sample1, 0.0065, 50, 'Homicide')
-findData(axs[0, 1], crime_sample3, 0.006, 150, 'Robbery')
-findData(axs[1, 0], crime_sample4, 0.006, 150, 'Battery')
-findData(axs[1, 1], crime_sample8, 0.006, 150, 'Theft')
+find_data_DBSCAN(axs[0, 0], crime_sample[0], 0.0065, 50, '01 Homicide')
+
+#These all need their parameters tweaked better
+find_data_DBSCAN(axs[1, 0], crime_sample[1], 0.0065, 50, 'Criminal Sexual Assault')
+find_data_DBSCAN(axs[2, 0], crime_sample[2], 0.0065, 50, 'Robbery')
+find_data_DBSCAN(axs[3, 0], crime_sample[3], 0.0065, 50, 'Battery')
+find_data_DBSCAN(axs[0, 1], crime_sample[4], 0.0065, 50, 'Assault')
+find_data_DBSCAN(axs[1, 1], crime_sample[5], 0.0065, 50, 'Burglary')
+#find_data_DBSCAN(axs[2, 1], crime_sample[6], 0.0065, 50, 'Vehicular Burglary')
+find_data_DBSCAN(axs[3, 1], crime_sample[7], 0.0065, 50, 'Theft')
+find_data_DBSCAN(axs[0, 2], crime_sample[8], 0.0065, 50, 'Motor Vehicle Theft')
+find_data_DBSCAN(axs[1, 2], crime_sample[9], 0.0065, 50, 'Arson & Human Trafficking')
+find_data_DBSCAN(axs[2, 2], crime_sample[10], 0.0065, 50, 'Deceptive Practices')
+find_data_DBSCAN(axs[3, 2], crime_sample[11], 0.0065, 50, 'Computer Deceptive Practices')
+find_data_DBSCAN(axs[0, 3], crime_sample[12], 0.0065, 50, 'Criminal Damage & Tresspassing')
+find_data_DBSCAN(axs[1, 3], crime_sample[13], 0.0065, 50, 'Deadly Weapons')
+find_data_DBSCAN(axs[2, 3], crime_sample[14], 0.0065, 50, 'Sex Offenses')
+find_data_DBSCAN(axs[3, 3], crime_sample[15], 0.0065, 50, 'Gambling')
+
 plt.show()
 
 
