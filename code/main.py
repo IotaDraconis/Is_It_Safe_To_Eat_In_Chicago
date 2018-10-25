@@ -116,7 +116,7 @@ find_data_DBSCAN(axs[2, 3], crime_sample[14], 0.0065, 50, 'Sex Offenses')
 find_data_DBSCAN(axs[3, 3], crime_sample[15], 0.0065, 50, 'Gambling')
 
 plt.show()
-
+print(f'Done plotting');
 
 '''
 # Plot the samples
