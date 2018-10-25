@@ -61,8 +61,11 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
 
 
 #TODO: Implement sow_and_grow with the disjoint-set data structure
-#def sow_and_grow(X, eps, min_samples, n):
+def sow_and_grow(X, eps, min_samples, n):
+    pass
 
+def mesh_plot():
+    pass
 
 ## Start of lodaing data
 # Read entire csv as a numpy array
@@ -96,15 +99,15 @@ fig, axs = plt.subplots(4, 4, sharex=True, sharey=True)
 find_data_DBSCAN(axs[0, 0], crime_sample[0], 0.0065, 50, '01 Homicide')
 
 #These all need their parameters tweaked better
-find_data_DBSCAN(axs[1, 0], crime_sample[1], 0.0065, 50, 'Criminal Sexual Assault')
-find_data_DBSCAN(axs[2, 0], crime_sample[2], 0.0065, 50, 'Robbery')
-find_data_DBSCAN(axs[3, 0], crime_sample[3], 0.0065, 50, 'Battery')
-find_data_DBSCAN(axs[0, 1], crime_sample[4], 0.0065, 50, 'Assault')
-find_data_DBSCAN(axs[1, 1], crime_sample[5], 0.0065, 50, 'Burglary')
-#find_data_DBSCAN(axs[2, 1], crime_sample[6], 0.0065, 50, 'Vehicular Burglary')
-find_data_DBSCAN(axs[3, 1], crime_sample[7], 0.0065, 50, 'Theft')
-find_data_DBSCAN(axs[0, 2], crime_sample[8], 0.0065, 50, 'Motor Vehicle Theft')
-find_data_DBSCAN(axs[1, 2], crime_sample[9], 0.0065, 50, 'Arson & Human Trafficking')
+find_data_DBSCAN(axs[1, 0], crime_sample[1],  0.0065, 50, 'Criminal Sexual Assault')
+find_data_DBSCAN(axs[2, 0], crime_sample[2],  0.0065, 50, 'Robbery')
+find_data_DBSCAN(axs[3, 0], crime_sample[3],  0.0065, 50, 'Battery')
+find_data_DBSCAN(axs[0, 1], crime_sample[4],  0.0065, 50, 'Assault')
+find_data_DBSCAN(axs[1, 1], crime_sample[5],  0.0065, 50, 'Burglary')
+#find_data_DBSCAN(axs[2, 1], crime_sample[6],  0.0065, 50, 'Vehicular Burglary')
+find_data_DBSCAN(axs[3, 1], crime_sample[7],  0.0065, 50, 'Theft')
+find_data_DBSCAN(axs[0, 2], crime_sample[8],  0.0065, 50, 'Motor Vehicle Theft')
+find_data_DBSCAN(axs[1, 2], crime_sample[9],  0.0065, 50, 'Arson & Human Trafficking')
 find_data_DBSCAN(axs[2, 2], crime_sample[10], 0.0065, 50, 'Deceptive Practices')
 find_data_DBSCAN(axs[3, 2], crime_sample[11], 0.0065, 50, 'Computer Deceptive Practices')
 find_data_DBSCAN(axs[0, 3], crime_sample[12], 0.0065, 50, 'Criminal Damage & Tresspassing')
