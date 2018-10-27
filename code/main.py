@@ -45,7 +45,7 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
         xy = X[class_member_mask & core_samples_mask]
         plt.plot(xy.latitude,
                  xy.longitude,
-                 '.',
+                 ',',
                  markerfacecolor=tuple(col),
                  markeredgecolor='k',
                  markersize=14)
@@ -53,7 +53,7 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
         xy = X[class_member_mask & ~core_samples_mask]
         plt.plot(xy.latitude,
                  xy.longitude,
-                 '.',
+                 ',',
                  markerfacecolor=tuple(col),
                  markeredgecolor='k',
                  markersize=6)
