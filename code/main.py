@@ -199,13 +199,21 @@ for i in range(16):
 
 
 ## Run the sets through our mesh plotting
+all_in_one_plot = True
+
 
 print(f'plotting meshes')
-#axs = fig.add_subplot(1, 1, 1, projection='3d')
+if all_in_one_plot == True:
+    fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
+
 
 for i in range(16):
-    fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
-    axs = fig.add_subplot(1, 1, 1, projection='3d') # used to use 4, 4, i + 1 so that they were all on the same plot as subplots
+    if all_in_one_plot == True:
+        axs = fig.add_subplot(4, 4, i + 1, projection='3d')
+    elif all_in_one_plot == False:
+        fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
+        axs = fig.add_subplot(1, 1, 1, projection='3d') # used to use 4, 4, i + 1 so that they were all on the same plot as subplots
+
     if i != 6:
         print(f'Running mesh function {plot_titles[i]} with x:{crime_meshX.shape} y:{crime_meshY.shape} z{crime_meshZ.shape}')
         mesh_plot(axs, crime_meshX, crime_meshY, crime_meshZ[i], plot_titles[i])
