@@ -66,17 +66,17 @@ def sow_and_grow(X, eps, min_samples, n):
     pass
 
 def mesh_plot(plt, X, Y, Z, title):
-    plt.plot_surface(X, Y, Z, rstride=4, cstride=4, alpha=0.3, cmap=cm.jet)
-    plt.plot_wireframe(X, Y, Z, rstride=4, cstride=4)
-    plt.contourf(X, Y, Z, zdir='z', cmap=cm.coolwarm, offset=-5)
-    plt.contourf(X, Y, Z, zdir='x', cmap=cm.coolwarm, offset=-88.4)
-    plt.contourf(X, Y, Z, zdir='y', cmap=cm.coolwarm, offset=42.5)
+    plt.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=0.7, cmap=cm.jet)
+    #plt.plot_wireframe(X, Y, Z, rstride=1, cstride=1)
+    plt.contourf(X, Y, Z, zdir='z', cmap=cm.coolwarm, offset=-100)
+    plt.contourf(X, Y, Z, zdir='x', cmap=cm.coolwarm, offset=41.6)
+    plt.contourf(X, Y, Z, zdir='y', cmap=cm.coolwarm, offset=-88.0)
     plt.set_xlabel('Lat')
-    #plt.set_xlim(-88.6, -86.9)
+    plt.set_xlim(41.6, 42.2)
     plt.set_ylabel('Long')
-    #plt.set_ylim(41, 42.7)
+    plt.set_ylim(-88.0, -87.4)
     plt.set_zlabel('Number of Crimes')
-    #plt.set_zlim(-100, 1000)
+    plt.set_zlim(-100, 1000)
     plt.set_title(f'{title}')
 
 
@@ -155,10 +155,22 @@ print(f'Done plotting');
 #upper_left_point = (-88.4, 42.5)
 #lower_right_point = (-87.1, 41.2)
 
+## Majority of data actually falls within this range:
+#  41.6,  42.2
+# -88.0, -87.4
+
+max_lat = 42.2
+min_lat = 41.6
+
+max_long = -87.4
+min_long = -88.0
+
+sep_distance = 0.6  # was 1.3, this was reduced due to the changing of points
+
 # DON'T SET separation_value TOO LOW!!! It controls the size of the grid directly
 # Range should be somewhere between 0.13 (11 * 11 grids) and 0.0013 (1001 * 1001 grids)
-separation_value = 0.013 # 101 * 101 grids
-grid_value = round(1.3 / separation_value) + 1
+separation_value = 0.006 # 101 * 101 grids
+grid_value = round(sep_distance / separation_value) + 1
 crime_meshX = np.ndarray(shape=(grid_value, grid_value), dtype=float)
 crime_meshY = np.ndarray(shape=(grid_value, grid_value), dtype=float)
 crime_meshZ = np.ndarray(shape=(16, grid_value, grid_value), dtype=float)
@@ -166,8 +178,8 @@ crime_meshZ = np.ndarray(shape=(16, grid_value, grid_value), dtype=float)
 
 for x in range(grid_value):
     for y in range(grid_value):
-        crime_meshX[x][y] = 41.2 + (y * separation_value)
-        crime_meshY[y][x] = -87.1 + (-1 * y * separation_value)
+        crime_meshX[x][y] = min_lat + (y * separation_value)
+        crime_meshY[y][x] = max_long + (-1 * y * separation_value)
 
 for i in range(16):
     if i != 6:
@@ -181,19 +193,19 @@ for i in range(16):
         for j in range(crime_sample[i].shape[0]):
             #print(crime_sample[i].iloc[j])
             #print(f'Lat: [{round((42.5 - float(crime_sample[i].iloc[j].latitude))/1.3 * 100)}] Long: [{round(-1 * (-88.4 - float(crime_sample[i].iloc[j].longitude))/1.3 * 100)}]')
-            crime_meshZ[i][round((42.5 - float(crime_sample[i].iloc[j].latitude))/1.3 * 100)][round(-1 * (-88.4 - float(crime_sample[i].iloc[j].longitude))/1.3 * 100)] += 1
+            crime_meshZ[i][round((max_lat - float(crime_sample[i].iloc[j].latitude))/sep_distance * (grid_value - 1))][round(-1 * (min_long - float(crime_sample[i].iloc[j].longitude))/sep_distance * (grid_value - 1))] += 1
     else:
         print(f'Skipping {plot_titles[6]}')
 
 
 ## Run the sets through our mesh plotting
-fig = plt.figure(figsize=plt.figaspect(0.5))
 
 print(f'plotting meshes')
 #axs = fig.add_subplot(1, 1, 1, projection='3d')
 
 for i in range(16):
-    axs = fig.add_subplot(4, 4, i + 1, projection='3d')
+    fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
+    axs = fig.add_subplot(1, 1, 1, projection='3d') # used to use 4, 4, i + 1 so that they were all on the same plot as subplots
     if i != 6:
         print(f'Running mesh function {plot_titles[i]} with x:{crime_meshX.shape} y:{crime_meshY.shape} z{crime_meshZ.shape}')
         mesh_plot(axs, crime_meshX, crime_meshY, crime_meshZ[i], plot_titles[i])
