@@ -14,6 +14,7 @@ import scipy.cluster as cluster
 matplotlib.use('Qt5Agg') # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from mpl_toolkits.mplot3d import axes3d
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 
@@ -64,8 +65,20 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
 def sow_and_grow(X, eps, min_samples, n):
     pass
 
-def mesh_plot():
-    pass
+def mesh_plot(plt, X, Y, Z, title):
+    plt.plot_surface(X, Y, Z, rstride=4, cstride=4, alpha=0.3, cmap=cm.jet)
+    plt.plot_wireframe(X, Y, Z, rstride=4, cstride=4)
+    plt.contourf(X, Y, Z, zdir='z', cmap=cm.coolwarm, offset=-5)
+    plt.contourf(X, Y, Z, zdir='x', cmap=cm.coolwarm, offset=-88.4)
+    plt.contourf(X, Y, Z, zdir='y', cmap=cm.coolwarm, offset=42.5)
+    plt.set_xlabel('Lat')
+    #plt.set_xlim(-88.6, -86.9)
+    plt.set_ylabel('Long')
+    #plt.set_ylim(41, 42.7)
+    plt.set_zlabel('Number of Crimes')
+    #plt.set_zlim(-100, 1000)
+    plt.set_title(f'{title}')
+
 
 ## Start of lodaing data
 # Read entire csv as a numpy array
@@ -86,17 +99,36 @@ for i in range(16):
     if crime_sample_TEMP.shape[0] > 50000:
         print(f'{i} has more than 50K points({crime_sample_TEMP.shape[0]} points), using a sample of 50K points.')
         crime_sample[i] = crime_sample_TEMP.sample(n=50000, replace=True)
+        crime_sample[i].index = range(len(crime_sample[i].index))
     elif crime_sample_TEMP.shape[0] > 0:
         print(f'{i} has {crime_sample_TEMP.shape[0]} points, using all points.')
         crime_sample[i] = crime_sample_TEMP
+        crime_sample[i].index = range(len(crime_sample[i].index))
     elif crime_sample_TEMP.shape[0] <= 0:
-        #crime_sample[{i}] = crime_sample_TEMP
         print(f'{i} is invalid, no points were found')
 
+plot_titles = ['Homicide',
+               'Criminal Sexual Assault',
+               'Robbery',
+               'Battery',
+               'Assault',
+               'Burglary',
+               'None',
+               'Theft',
+               'Motor Vehicle Theft',
+               'Arson & Human Trafficking',
+               'Deceptive Practices',
+               'Computer Deceptive Practices',
+               'Criminal Damage & Tresspassing',
+               'Deadly Weapons',
+               'Sex Offenses',
+               'Gambling']
+
+'''
 ## Run the sets created above on DBSCAN
 fig, axs = plt.subplots(4, 4, sharex=True, sharey=True)
 # The values for eps and min_samples need tweaked
-find_data_DBSCAN(axs[0, 0], crime_sample[0], 0.0065, 50, '01 Homicide')
+find_data_DBSCAN(axs[0, 0], crime_sample[0], 0.0065, 50, 'Homicide')
 
 #These all need their parameters tweaked better
 find_data_DBSCAN(axs[1, 0], crime_sample[1],  0.0065, 50, 'Criminal Sexual Assault')
@@ -104,7 +136,7 @@ find_data_DBSCAN(axs[2, 0], crime_sample[2],  0.0065, 50, 'Robbery')
 find_data_DBSCAN(axs[3, 0], crime_sample[3],  0.0065, 50, 'Battery')
 find_data_DBSCAN(axs[0, 1], crime_sample[4],  0.0065, 50, 'Assault')
 find_data_DBSCAN(axs[1, 1], crime_sample[5],  0.0065, 50, 'Burglary')
-#find_data_DBSCAN(axs[2, 1], crime_sample[6],  0.0065, 50, 'Vehicular Burglary')
+# Skip plot 7 (index 6) due to it having no data
 find_data_DBSCAN(axs[3, 1], crime_sample[7],  0.0065, 50, 'Theft')
 find_data_DBSCAN(axs[0, 2], crime_sample[8],  0.0065, 50, 'Motor Vehicle Theft')
 find_data_DBSCAN(axs[1, 2], crime_sample[9],  0.0065, 50, 'Arson & Human Trafficking')
@@ -114,6 +146,60 @@ find_data_DBSCAN(axs[0, 3], crime_sample[12], 0.0065, 50, 'Criminal Damage & Tre
 find_data_DBSCAN(axs[1, 3], crime_sample[13], 0.0065, 50, 'Deadly Weapons')
 find_data_DBSCAN(axs[2, 3], crime_sample[14], 0.0065, 50, 'Sex Offenses')
 find_data_DBSCAN(axs[3, 3], crime_sample[15], 0.0065, 50, 'Gambling')
+
+plt.show()
+print(f'Done plotting');
+'''
+
+## Initial plot of city without height:
+#upper_left_point = (-88.4, 42.5)
+#lower_right_point = (-87.1, 41.2)
+
+# DON'T SET separation_value TOO LOW!!! It controls the size of the grid directly
+# Range should be somewhere between 0.13 (11 * 11 grids) and 0.0013 (1001 * 1001 grids)
+separation_value = 0.013 # 101 * 101 grids
+grid_value = round(1.3 / separation_value) + 1
+crime_meshX = np.ndarray(shape=(grid_value, grid_value), dtype=float)
+crime_meshY = np.ndarray(shape=(grid_value, grid_value), dtype=float)
+crime_meshZ = np.ndarray(shape=(16, grid_value, grid_value), dtype=float)
+# Create the meshes
+
+for x in range(grid_value):
+    for y in range(grid_value):
+        crime_meshX[x][y] = 41.2 + (y * separation_value)
+        crime_meshY[y][x] = -87.1 + (-1 * y * separation_value)
+
+for i in range(16):
+    if i != 6:
+        for x in range(grid_value):
+            for y in range(grid_value):
+                crime_meshZ[i][x][y] = 0
+
+## Create crime arrays adding needed heights
+for i in range(16):
+    if i != 6:
+        for j in range(crime_sample[i].shape[0]):
+            #print(crime_sample[i].iloc[j])
+            #print(f'Lat: [{round((42.5 - float(crime_sample[i].iloc[j].latitude))/1.3 * 100)}] Long: [{round(-1 * (-88.4 - float(crime_sample[i].iloc[j].longitude))/1.3 * 100)}]')
+            crime_meshZ[i][round((42.5 - float(crime_sample[i].iloc[j].latitude))/1.3 * 100)][round(-1 * (-88.4 - float(crime_sample[i].iloc[j].longitude))/1.3 * 100)] += 1
+    else:
+        print(f'Skipping {plot_titles[6]}')
+
+
+## Run the sets through our mesh plotting
+fig = plt.figure(figsize=plt.figaspect(0.5))
+
+print(f'plotting meshes')
+#axs = fig.add_subplot(1, 1, 1, projection='3d')
+
+for i in range(16):
+    axs = fig.add_subplot(4, 4, i + 1, projection='3d')
+    if i != 6:
+        print(f'Running mesh function {plot_titles[i]} with x:{crime_meshX.shape} y:{crime_meshY.shape} z{crime_meshZ.shape}')
+        mesh_plot(axs, crime_meshX, crime_meshY, crime_meshZ[i], plot_titles[i])
+        print(f'Done plotting {plot_titles[i]}')
+    else:
+        print(f'Skipping {plot_titles[6]}')
 
 plt.show()
 print(f'Done plotting');
