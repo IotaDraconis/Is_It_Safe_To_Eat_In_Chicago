@@ -68,9 +68,9 @@ def sow_and_grow(X, eps, min_samples, n):
 def mesh_plot(plt, X, Y, Z, title):
     plt.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=0.7, cmap=cm.jet)
     #plt.plot_wireframe(X, Y, Z, rstride=1, cstride=1)
-    plt.contourf(X, Y, Z, zdir='z', cmap=cm.coolwarm, offset=-100)
+    plt.contourf(X, Y, Z, zdir='z', cmap=cm.coolwarm, offset=-200)
     plt.contourf(X, Y, Z, zdir='x', cmap=cm.coolwarm, offset=41.6)
-    plt.contourf(X, Y, Z, zdir='y', cmap=cm.coolwarm, offset=-88.0)
+    plt.contourf(X, Y, Z, zdir='y', cmap=cm.coolwarm, offset=-87.4)
     plt.set_xlabel('Lat')
     plt.set_xlim(41.6, 42.2)
     plt.set_ylabel('Long')
