@@ -5,20 +5,21 @@ If not already done, please download the following datasets described in dataset
 Then run prepare.py. This will clean the data for use with this script
 '''
 
-#import csv
+# DEBUG import csv
 import os
+
 import matplotlib
+matplotlib.use('Qt5Agg')  # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.cluster as cluster
-matplotlib.use('Qt5Agg') # Note, the backend of matplotlib should be Qt5Agg for it to work with 75K points
-import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import axes3d
-from sklearn.cluster import DBSCAN
 from sklearn import metrics
+from sklearn.cluster import DBSCAN
 
-## Function Defs
+
 def find_data_DBSCAN(plt, sample, epsln, minSam, title):
     X = sample[['latitude', 'longitude']]
     # Run DBSCAN on the samples
@@ -30,7 +31,7 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
 
     # Number of clusters in labels, ignoring noise if present.
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-    print(f'Estimated number of clusters for {title}: {n_clusters_}' )
+    print(f'Estimated number of clusters for {title}: {n_clusters_}')
 
     # Black removed and is used for noise instead.
     unique_labels = set(labels)
@@ -61,14 +62,15 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
     plt.set_title(f'{title}:{n_clusters_}')
 
 
-#TODO: Implement sow_and_grow with the disjoint-set data structure
+# TODO: Implement sow_and_grow with the disjoint-set data structure
 def sow_and_grow(X, eps, min_samples, n):
     pass
 
+
 def mesh_plot(plt, X, Y, Z, title):
     plt.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=0.7, cmap=cm.jet)
-    #plt.plot_wireframe(X, Y, Z, rstride=1, cstride=1)
-    plt.contourf(X, Y, Z, zdir='z', cmap=cm.jet, offset=-400) #These used to use coolwarm
+    # DEBUG plt.plot_wireframe(X, Y, Z, rstride=1, cstride=1)
+    plt.contourf(X, Y, Z, zdir='z', cmap=cm.jet, offset=-400)  # These used to use coolwarm
     plt.contourf(X, Y, Z, zdir='x', cmap=cm.jet, offset=41.6)
     plt.contourf(X, Y, Z, zdir='y', cmap=cm.jet, offset=-87.4)
     plt.set_xlabel('Lat')
@@ -80,10 +82,10 @@ def mesh_plot(plt, X, Y, Z, title):
     plt.set_title(f'{title}')
 
 
-## Start of lodaing data
+# Start of lodaing data
 # Read entire csv as a numpy array
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
-#ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
+# DEBUG ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
 
 crimeAll_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
 print(f'array was created, making dataframe')
@@ -151,11 +153,11 @@ plt.show()
 print(f'Done plotting');
 '''
 
-## Initial plot of city without height:
-#upper_left_point = (-88.4, 42.5)
-#lower_right_point = (-87.1, 41.2)
+# Initial plot of city without height:
+# DEBUG upper_left_point = (-88.4, 42.5)
+# DEBUG lower_right_point = (-87.1, 41.2)
 
-## Majority of data actually falls within this range:
+# Majority of data actually falls within this range:
 #  41.6,  42.2
 # -88.0, -87.4
 
@@ -169,7 +171,7 @@ sep_distance = 0.6  # was 1.3, this was reduced due to the changing of points
 
 # DON'T SET separation_value TOO LOW!!! It controls the size of the grid directly
 # Range should be somewhere between 0.13 (11 * 11 grids) and 0.0013 (1001 * 1001 grids)
-separation_value = 0.006 # 101 * 101 grids
+separation_value = 0.006  # 101 * 101 grids
 grid_value = round(sep_distance / separation_value) + 1
 crime_meshX = np.ndarray(shape=(grid_value, grid_value), dtype=float)
 crime_meshY = np.ndarray(shape=(grid_value, grid_value), dtype=float)
@@ -187,32 +189,32 @@ for i in range(16):
             for y in range(grid_value):
                 crime_meshZ[i][x][y] = 0
 
-## Create crime arrays adding needed heights
+# Create crime arrays adding needed heights
 for i in range(16):
     if i != 6:
         for j in range(crime_sample[i].shape[0]):
-            #print(crime_sample[i].iloc[j])
-            #print(f'Lat: [{round((42.5 - float(crime_sample[i].iloc[j].latitude))/1.3 * 100)}] Long: [{round(-1 * (-88.4 - float(crime_sample[i].iloc[j].longitude))/1.3 * 100)}]')
-            crime_meshZ[i][round((max_lat - float(crime_sample[i].iloc[j].latitude))/sep_distance * (grid_value - 1))][round(-1 * (min_long - float(crime_sample[i].iloc[j].longitude))/sep_distance * (grid_value - 1))] += 1
+            # DEBUG print(crime_sample[i].iloc[j])
+            # DEBUG print(f'Lat: [{round((42.5 - float(crime_sample[i].iloc[j].latitude))/1.3 * 100)}] Long: [{round(-1 * (-88.4 - float(crime_sample[i].iloc[j].longitude))/1.3 * 100)}]')
+            crime_meshZ[i][round((max_lat - float(crime_sample[i].iloc[j].latitude)) / sep_distance * (grid_value - 1))][round(-1 * (min_long - float(crime_sample[i].iloc[j].longitude)) / sep_distance * (grid_value - 1))] += 1
     else:
         print(f'Skipping {plot_titles[6]}')
 
 
-## Run the sets through our mesh plotting
-all_in_one_plot = True
+# Run the sets through our mesh plotting
+all_in_one_plot = False
 
 
 print(f'plotting meshes')
-if all_in_one_plot == True:
+if all_in_one_plot is True:
     fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
 
 
 for i in range(16):
-    if all_in_one_plot == True:
+    if all_in_one_plot is True:
         axs = fig.add_subplot(4, 4, i + 1, projection='3d')
-    elif all_in_one_plot == False:
+    elif all_in_one_plot is False:
         fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
-        axs = fig.add_subplot(1, 1, 1, projection='3d') # used to use 4, 4, i + 1 so that they were all on the same plot as subplots
+        axs = fig.add_subplot(1, 1, 1, projection='3d')  # used to use 4, 4, i + 1 so that they were all on the same plot as subplots
 
     if i != 6:
         print(f'Running mesh function {plot_titles[i]} with x:{crime_meshX.shape} y:{crime_meshY.shape} z{crime_meshZ.shape}')
@@ -222,7 +224,7 @@ for i in range(16):
         print(f'Skipping {plot_titles[6]}')
 
 plt.show()
-print(f'Done plotting');
+print(f'Done plotting')
 
 '''
 # Plot the samples
