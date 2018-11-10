@@ -31,6 +31,7 @@ ordered_food_inspections_path = os.path.join(script_dir, '../datasets/ordered_fo
 # [5] = latitude
 # [6] = longitude
 '''
+'''
 with open(crime_path) as crime_csv_file:
     with open(ordered_crime_path, mode='w') as ordered_crime_csv_file:
         crime_csv_reader = csv.reader(crime_csv_file, delimiter=',')
@@ -52,14 +53,14 @@ with open(crime_path) as crime_csv_file:
                     ordered_crime_writer.writerow([row[2], row[3], int(row[4][:2]), row[8], row[9], row[19], row[20]])
                 line_count += 1
         print(f'Processed {line_count} lines. {lines_removed} lines removed.')
-
+'''
 '''
 # Process the food_inspections.csv and create ordered_food_inspections.csv
 # Resulting columns are:
 # [0] = dba_name
 # [1] = aka_name
 # [2] = facility_type
-# [3] = risk
+# [3] = risk: In the form of the 3: ('Risk 1 (High)', 'Risk 2 (Medium)', 'Risk 3 (Low)')
 # [4] = inspection_date
 # [5] = inspection_type
 # [6] = results
@@ -67,18 +68,27 @@ with open(crime_path) as crime_csv_file:
 # [8] = latitude
 # [9] = longitude
 '''
-'''
+
 with open(food_inspections_path) as food_inspections_csv_file:
     with open(ordered_food_inspections_path, mode='w') as ordered_food_inspections_csv_file:
         food_inspections_csv_reader = csv.reader(food_inspections_csv_file, delimiter=',')
         ordered_food_inspections_writer = csv.writer(ordered_food_inspections_csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         line_count = 0
+        lines_removed = 0
         for row in food_inspections_csv_reader:
             if line_count == 0:
-                ordered_food_inspections_writer.writerow(["dba_name","aka_name","facility_type","risk","inspection_date","inspection_type","results","violations","latitude","longitude"])
+                ordered_food_inspections_writer.writerow(["risk", "latitude", "longitude"])
+                # ordered_food_inspections_writer.writerow(["dba_name","aka_name","facility_type","risk","inspection_date","inspection_type","results","violations","latitude","longitude"])
                 line_count += 1
             else:
-                ordered_food_inspections_writer.writerow([row[1], row[2], row[4], row[5], row[10], row[11], row[12], row[13], row[14], row[15]])
+                if (row[5] in (None, "")) or (row[14] in (None, "")) or (row[15] in (None, "")):
+                    print(f'Blank Data found! Removing line_count={line_count}')
+                    lines_removed += 1
+                elif (float(row[14]) > 42.5) or (float(row[14]) < 41.2) or (float(row[15]) < -88.4) or (float(row[15]) > -87.1):
+                    print(f'Lat-Long point outside of main city! Removing line_count={line_count}')
+                    lines_removed += 1
+                else:
+                    ordered_food_inspections_writer.writerow([row[5], row[14], row[15]])
+                # ordered_food_inspections_writer.writerow([row[1], row[2], row[4], row[5], row[10], row[11], row[12], row[13], row[14], row[15]])
                 line_count += 1
-        print(f'Processed {line_count} lines.')
-'''
+        print(f'Processed {line_count} lines. {lines_removed} lines removed.')

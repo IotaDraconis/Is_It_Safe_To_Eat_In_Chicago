@@ -47,7 +47,7 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
         xy = X[class_member_mask & core_samples_mask]
         plt.plot(xy.latitude,
                  xy.longitude,
-                 ',',
+                 '.',
                  markerfacecolor=tuple(col),
                  markeredgecolor='k',
                  markersize=14)
@@ -55,16 +55,11 @@ def find_data_DBSCAN(plt, sample, epsln, minSam, title):
         xy = X[class_member_mask & ~core_samples_mask]
         plt.plot(xy.latitude,
                  xy.longitude,
-                 ',',
+                 '.',
                  markerfacecolor=tuple(col),
                  markeredgecolor='k',
                  markersize=6)
     plt.set_title(f'{title}:{n_clusters_}')
-
-
-# TODO: Implement sow_and_grow with the disjoint-set data structure
-def sow_and_grow(X, eps, min_samples, n):
-    pass
 
 
 def mesh_plot(plt, X, Y, Z, title):
@@ -81,11 +76,117 @@ def mesh_plot(plt, X, Y, Z, title):
     plt.set_zlim(-100, 1000)
     plt.set_title(f'{title}')
 
+print("test")
+# Food Data
+ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
+food_array = np.genfromtxt(ordered_food_inspections_path, delimiter=',', dtype=None, encoding='utf8')
+food_df = pd.DataFrame(data=food_array, columns=["risk", "latitude", "longitude"])
+food_df.reset_index()
 
-# Start of lodaing data
+food_sample = {}
+for i in range(3):
+    last_string_section = ""
+    if i == 0:
+        last_string_section = " (High)"
+    elif i == 1:
+        last_string_section = " (Medium)"
+    elif i == 2:
+        last_string_section = " (Low)"
+    risk_string = "Risk " + f'{(i + 1)}' + last_string_section
+    print(risk_string)
+    food_df_TEMP = food_df.loc[food_df['risk'] == f'{risk_string}']
+    if food_df_TEMP.shape[0] > 50000:
+        print(f'{i} has more than 50K points({food_df_TEMP.shape[0]} points), using a sample of 50K points.')
+        food_sample[i] = food_df_TEMP.sample(n=50000, replace=True)
+        food_sample[i].index = range(len(food_sample[i].index))
+    elif food_df_TEMP.shape[0] > 0:
+        print(f'{i} has {food_df_TEMP.shape[0]} points, using all points.')
+        food_sample[i] = food_df_TEMP
+        food_sample[i].index = range(len(food_sample[i].index))
+    elif food_df_TEMP.shape[0] <= 0:
+        print(f'{i} is invalid, no points were found')
+
+'''
+fig, axs = plt.subplots(1, 3, sharex=True, sharey=True)
+# The values for eps and min_samples need tweaked
+find_data_DBSCAN(axs[0], food_sample[0], 0.0065, 50, 'Risk 1 (High)')
+find_data_DBSCAN(axs[1], food_sample[1], 0.0065, 50, 'Risk 2 (Medium)')
+find_data_DBSCAN(axs[2], food_sample[2], 0.0065, 50, 'Risk 3 (Low)')
+
+plt.show()
+'''
+
+max_lat = 42.2
+min_lat = 41.6
+
+max_long = -87.4
+min_long = -88.0
+
+sep_distance = 0.6  # was 1.3, this was reduced due to the changing of points
+
+# DON'T SET separation_value TOO LOW!!! It controls the size of the grid directly
+# Range should be somewhere between 0.13 (11 * 11 grids) and 0.0013 (1001 * 1001 grids)
+separation_value = 0.006  # 101 * 101 grids
+grid_value = round(sep_distance / separation_value) + 1
+food_meshX = np.ndarray(shape=(grid_value, grid_value), dtype=float)
+food_meshY = np.ndarray(shape=(grid_value, grid_value), dtype=float)
+food_meshZ = np.ndarray(shape=(16, grid_value, grid_value), dtype=float)
+# Create the meshes
+
+for x in range(grid_value):
+    for y in range(grid_value):
+        food_meshX[x][y] = min_lat + (y * separation_value)
+        food_meshY[y][x] = max_long + (-1 * y * separation_value)
+
+for i in range(16):
+    if i != 6:
+        for x in range(grid_value):
+            for y in range(grid_value):
+                food_meshZ[i][x][y] = 0
+
+# Create crime arrays adding needed heights
+for i in range(3):
+    for j in range(food_sample[i].shape[0]):
+        # DEBUG print(food_sample[i].iloc[j])
+        # DEBUG print(f'Lat: [{round((42.5 - float(food_sample[i].iloc[j].latitude))/1.3 * 100)}] Long: [{round(-1 * (-88.4 - float(food_sample[i].iloc[j].longitude))/1.3 * 100)}]')
+        food_meshZ[i][round((max_lat - float(food_sample[i].iloc[j].latitude)) / sep_distance * (grid_value - 1))][round(-1 * (min_long - float(food_sample[i].iloc[j].longitude)) / sep_distance * (grid_value - 1))] += 1
+
+plot_titles = ["Risk 1 (High)",
+               "Risk 2 (Medium)",
+               "Risk 3 (Low)"]
+
+# Run the sets through our mesh plotting
+all_in_one_plot = False
+
+
+print(f'plotting meshes')
+if all_in_one_plot is True:
+    fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
+
+
+for i in range(3):
+    if all_in_one_plot is True:
+        axs = fig.add_subplot(1, 3, i + 1, projection='3d')
+    elif all_in_one_plot is False:
+        fig = plt.figure(num=i, figsize=plt.figaspect(0.5))
+        axs = fig.add_subplot(1, 1, 1, projection='3d')  # used to use 4, 4, i + 1 so that they were all on the same plot as subplots
+
+    print(f'Running mesh function {plot_titles[i]} with x:{food_meshX.shape} y:{food_meshY.shape} z{food_meshZ.shape}')
+    mesh_plot(axs, food_meshX, food_meshY, food_meshZ[i], plot_titles[i])
+    print(f'Done plotting {plot_titles[i]}')
+
+plt.show()
+print(f'Done plotting')
+
+
+print("Remove the bellow line and re-run to run the crime set")
+# This will be re-organized into two scripts over break
+pause_processing = input("PRESS ENTER TO CONTINUE.")
+
+
+# Crime Data
 # Read entire csv as a numpy array
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
-# DEBUG ordered_food_inspections_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_food_inspections.csv')
 
 crimeAll_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
 print(f'array was created, making dataframe')
