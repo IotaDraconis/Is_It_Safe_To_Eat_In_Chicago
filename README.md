@@ -17,6 +17,8 @@ A look at the various clustering methodologies used in social safety factors to 
 
 TODO: We will develop are more professional abract from our hypothesis and research results.  
 
+[**Presentation**](https://docs.google.com/presentation/d/1Jk22KaDQjfLWMEAeHfC5wMPeJX4yzhiEcgmyO2v7-LQ/edit?usp=sharing)
+
 **Software Tools**  
 
 #### Github  
