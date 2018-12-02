@@ -1,0 +1,67 @@
+[Command: python -u 'D:\User Files\Documents\School\CS-533\Is_It_Safe_To_Eat_In_Chicago\code\main.py']
+array was created, making dataframe
+dataframe was created, taking sample
+Using ICUR: 1
+<class 'pandas.core.frame.DataFrame'>
+0 has 9306 points, using all points.
+Using ICUR: 2
+<class 'pandas.core.frame.DataFrame'>
+1 has 25456 points, using all points.
+Using ICUR: 3
+<class 'pandas.core.frame.DataFrame'>
+2 has more than 50K points(252476 points), using a sample of 50K points.
+Using ICUR: 4
+<class 'pandas.core.frame.DataFrame'>
+3 has more than 50K points(1246451 points), using a sample of 50K points.
+Using ICUR: 5
+<class 'pandas.core.frame.DataFrame'>
+4 has more than 50K points(416259 points), using a sample of 50K points.
+Using ICUR: 6
+<class 'pandas.core.frame.DataFrame'>
+5 has more than 50K points(384413 points), using a sample of 50K points.
+Using ICUR: 7
+<class 'pandas.core.frame.DataFrame'>
+6 is invalid, no points were found
+Using ICUR: 8
+<class 'pandas.core.frame.DataFrame'>
+7 has more than 50K points(1391073 points), using a sample of 50K points.
+Using ICUR: 9
+<class 'pandas.core.frame.DataFrame'>
+8 has more than 50K points(309436 points), using a sample of 50K points.
+Using ICUR: 10
+<class 'pandas.core.frame.DataFrame'>
+9 has 11045 points, using all points.
+Using ICUR: 11
+<class 'pandas.core.frame.DataFrame'>
+10 has more than 50K points(199018 points), using a sample of 50K points.
+Using ICUR: 12
+<class 'pandas.core.frame.DataFrame'>
+11 has more than 50K points(51522 points), using a sample of 50K points.
+Using ICUR: 13
+<class 'pandas.core.frame.DataFrame'>
+12 has more than 50K points(954057 points), using a sample of 50K points.
+Using ICUR: 14
+<class 'pandas.core.frame.DataFrame'>
+13 has more than 50K points(67185 points), using a sample of 50K points.
+Using ICUR: 15
+<class 'pandas.core.frame.DataFrame'>
+14 has more than 50K points(92069 points), using a sample of 50K points.
+Using ICUR: 16
+<class 'pandas.core.frame.DataFrame'>
+15 has 14581 points, using all points.
+Estimated number of clusters for 01 Homicide: 12
+Estimated number of clusters for Criminal Sexual Assault: 8
+Estimated number of clusters for Robbery: 4
+Estimated number of clusters for Battery: 9
+Estimated number of clusters for Assault: 9
+Estimated number of clusters for Burglary: 5
+Estimated number of clusters for Theft: 12
+Estimated number of clusters for Motor Vehicle Theft: 8
+Estimated number of clusters for Arson & Human Trafficking: 14
+Estimated number of clusters for Deceptive Practices: 7
+Estimated number of clusters for Computer Deceptive Practices: 16
+Estimated number of clusters for Criminal Damage & Tresspassing: 9
+Estimated number of clusters for Deadly Weapons: 11
+Estimated number of clusters for Sex Offenses: 7
+Estimated number of clusters for Gambling: 13
+[Finished in 215.631s]
