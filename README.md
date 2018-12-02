@@ -35,13 +35,21 @@ Check your version of python:
 ```python
 python3 --version
 ```
+#### pip3
 
 #### MatPlotLib
 [Click here to go to MatPlotLib](https://matplotlib.org/)
 
+#### Pandas  
+
+#### PySide  
+
+#### numpy
+
 #### Sci-Kit Learn
 
 [Click here to go to Sci-Kit Learn](http://scikit-learn.org/stable/modules/clustering.html#clustering)
+[Click here to install Sci-Kit Learn modules needed](http://scikit-learn.org/stable/developers/advanced_installation.html)
 
 **Data Sets**
 
