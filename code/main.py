@@ -189,6 +189,8 @@ pause_processing = input("PRESS ENTER TO CONTINUE.")
 ordered_crime_path = os.path.join(os.path.dirname(__file__), '../datasets/ordered_crime.csv')
 
 crimeAll_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None, encoding='utf8')
+# TODO: Removed encoding='utf8'
+#crimeAll_array = np.genfromtxt(ordered_crime_path, delimiter=',', dtype=None)
 print(f'array was created, making dataframe')
 crimeAll_df = pd.DataFrame(data=crimeAll_array, columns=["date", "block", "iucr", "arrest", "domestic", "latitude", "longitude"])
 crimeAll_df.reset_index()

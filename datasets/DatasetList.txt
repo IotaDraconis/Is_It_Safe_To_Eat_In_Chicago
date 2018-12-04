@@ -3,3 +3,15 @@ Chicago Crime Dataset: https://data.cityofchicago.org/Public-Safety/Crimes-2001-
 
 Chicago Food Inspections Dataset: https://data.cityofchicago.org/Health-Human-Services/Food-Inspections/4ijn-s7e5
     save as food_inspections.csv
+
+Chicago Public Shools Dataset: https://data.cityofchicago.org/browse?category=Education
+
+	save as schools_2011-2012.csv
+			schools_2012-2013_Elem.csv
+			schools_2012-2013_HS.csv
+			schools_2013-2014_Elem.csv
+			schools_2013-2014_HS.csv
+##			schools_2014-2015.csv  // This data set is not readily available on the web			
+			schools_2015-2016.csv
+			schools_2016-2017.csv
+			schools_2017-2018.csv
